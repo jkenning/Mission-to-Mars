@@ -1,7 +1,8 @@
 # Import flask and render template, use PyMongo to interact with Mongo db, use scraping code
-from flask import Flask, render_template
-from flask_pymongo import PyMongo
+import pymongo
 import scraping
+from flask import Flask, render_template, redirect
+from flask_pymongo import PyMongo
 
 # Set up flask
 app = Flask(__name__)
