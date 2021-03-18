@@ -19,7 +19,6 @@ def scrape_all():
         "news_paragraph": news_paragraph,
         "featured_image": featured_image(browser),
         "facts": mars_facts(),
-        "hemispheres": hem_img_urls,
         "last_modified": dt.datetime.now()
     }
 
@@ -102,55 +101,3 @@ if __name__ == "__main__":
 
     # If running as script, print scraped data
     print(scrape_all())
-
-def hemsiphere_images(browser):
-    # 1. Use browser to visit the URL 
-    hem_url = 'https://data-class-mars-hemispheres.s3.amazonaws.com/Mars_Hemispheres/index.html'
-    browser.visit(hem_url)
-
-    # Parse the resulting html with soup
-    hem_html = browser.html
-    hem_soup = soup(hem_html, 'html.parser')
-
-
-    # 2. Create a list to hold the images and titles.
-    hemisphere_image_urls = []
-
-    # 3. Write code to retrieve the image urls and titles for each hemisphere.
-    # Find HTML tags
-    items = hem_soup.find('div', class_='result-list')
-    hemispheres = items.find_all('div', class_='item')
-
-    # Use for loop to iterate through tags
-    for item in hemispheres:
-        # Create empty dictionary
-        hemisphere = {}
-        
-        # Find each hemisphere link
-        item_link = item.find('a')['href']
-        img_link = f'https://data-class-mars-hemispheres.s3.amazonaws.com/Mars_Hemispheres/{item_link}'
-        
-        # Navigate to the full-resolution image page
-        browser.visit(img_link)
-        time.sleep(1)
-        
-        # Retrieve full-resolution image URL string
-        img_html = browser.html
-        img_soup = soup(img_html, "html.parser")
-        location = img_soup.find('div', class_='wide-image-wrapper')
-        img_link = location.find('img', class_='wide-image').get('src')
-        img_url = f'https://data-class-mars-hemispheres.s3.amazonaws.com/Mars_Hemispheres/{img_link}'
-        
-        # Retrieve title for each image
-        title = img_soup.find('h2', class_='title').text.replace(' Enhanced', '')
-        
-        # Append dictionary and list
-        hemisphere['title'] = title
-        hemisphere['img_url'] = img_url
-        hemisphere_image_urls.append(hemisphere)
-
-        # 4. Print the list that holds the dictionary of each image url and title.
-        return hemisphere_image_urls
-
-    # 5. Quit the browser
-    browser.quit()
